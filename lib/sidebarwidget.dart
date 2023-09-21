@@ -6,11 +6,13 @@ class Sidebar extends StatelessWidget {
   final String logFilePath;
   final bool showResidentGamingButton; // Control visibility of Resident Gaming button
   final bool showExceedGamingButton; // Control visibility of Exceed Gaming button
+  final bool showMusecaLauncher;
 
   const Sidebar({super.key, 
     required this.logFilePath,
     this.showResidentGamingButton = false,
     this.showExceedGamingButton = false,
+    this.showMusecaLauncher = false,
   });
 
   @override
@@ -37,6 +39,10 @@ class Sidebar extends StatelessWidget {
           if (showExceedGamingButton)
             _buildSidePanelItem(context, 'Avvia loader-KFC.rs', () {
               _exceedGear();
+            }),
+          if (showMusecaLauncher)
+            _buildSidePanelItem(context, 'Avvia loader-PIX.rs', () {
+              _museca();
             }),
         ],
       ),
@@ -73,6 +79,26 @@ class Sidebar extends StatelessWidget {
 
   void _exceedGear() async {
     const assetPath = 'lib/assets/bin/exceed.bat';
+
+    try {
+      final appDir = Directory.current;
+      final rustLoader = File('${appDir.path}/$assetPath');
+
+      if (await rustLoader.exists()) {
+        final result = await Process.run(rustLoader.path, []);
+        print('Result: ${result.stdout}');
+      } else {
+        print('File not found: $assetPath');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+
+  
+  void _museca() async {
+    const assetPath = 'lib/assets/bin/museca.bat';
 
     try {
       final appDir = Directory.current;

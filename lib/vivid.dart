@@ -10,7 +10,7 @@ class VividPage extends StatelessWidget {
         title: const Text('Sound Voltex:VividWave'),
       ),
       body: const Center(
-        child: Text('Test Content for the SDVX:VW settings'),
+        child: Text('We could not find a proper soundvoltex Vividwave installation. check your data or download a newer version.'),
       ),
     );
   }
