@@ -21,15 +21,15 @@ class MyApp extends StatelessWidget {
         '/': (context) => MyHomePage(),
         '/generalSettings': (context) => GeneralSettingsPage(),
         '/serverSettings': (context) => ServerSettings(),
-        '/logViewer': (context) => LogViewer(filePath: 'E:\\KFC-2022122001\\contents\\log.txt'),
+        '/logViewer': (context) =>
+            LogViewer(filePath: 'E:\\KFC-2022122001\\contents\\log.txt'),
       },
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
-
       ),
-        darkTheme: ThemeData.dark(),
-        themeMode: ThemeMode.system,
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.system,
     );
   }
 }
@@ -78,7 +78,16 @@ class MyHomePage extends StatelessWidget {
                   // Navigate to the general settings page
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => LogViewer(filePath: 'E:\\KFC-2022122001\\contents\\log.txt'),
+                      builder: (context) => LogViewer(
+                          filePath: 'E:\\KFC-2022122001\\contents\\log.txt'),
+                    ),
+                  );
+                }),
+                _buildSidePanelItem(context, 'Riconoscimenti', () {
+                  // Navigate to the general settings page
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => Credits(),
                     ),
                   );
                 }),
@@ -99,7 +108,8 @@ class MyHomePage extends StatelessWidget {
                 children: [
                   buildGameOption(
                     imagePath: 'lib/assets/resident.png',
-                    text: 'Beatmania IIDX 30\nLDJ:J:A:A:2023040400\nF:\\LDJ\\003-2023040400\\contents',
+                    text:
+                        'Beatmania IIDX 30\nLDJ:J:A:A:2023040400\nF:\\LDJ\\003-2023040400\\contents',
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
@@ -110,7 +120,8 @@ class MyHomePage extends StatelessWidget {
                   ),
                   buildGameOption(
                     imagePath: 'lib/assets/exceed.png',
-                    text: 'SoundVoltex: Exceed Gear\nKFC:A:G:A:2023091200\nE:\\KFC-003-2023091200\\contents',
+                    text:
+                        'SoundVoltex: Exceed Gear\nKFC:A:G:A:2023091200\nE:\\KFC-003-2023091200\\contents',
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
@@ -121,7 +132,8 @@ class MyHomePage extends StatelessWidget {
                   ),
                   buildGameOption(
                     imagePath: 'lib/assets/vivid.png',
-                    text: 'SoundVoltex: vividwave\nKFC:J:F:A:2020122200\nF:\\KFC-008-2020122200\\contents',
+                    text:
+                        'SoundVoltex: vividwave\nKFC:J:F:A:2020122200\nF:\\KFC-008-2020122200\\contents',
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
@@ -132,7 +144,8 @@ class MyHomePage extends StatelessWidget {
                   ),
                   buildGameOption(
                     imagePath: 'lib/assets/museca.png',
-                    text: 'Museca 1+1/2\nPIX:J:B:A:2018073002\nF:\\PIX-2018073002\\contents',
+                    text:
+                        'Museca 1+1/2\nPIX:J:B:A:2018073002\nF:\\PIX-2018073002\\contents',
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
@@ -150,7 +163,8 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildSidePanelItem(BuildContext context, String title, VoidCallback onTap) {
+  Widget _buildSidePanelItem(
+      BuildContext context, String title, VoidCallback onTap) {
     return ListTile(
       title: Text(
         title,
@@ -362,7 +376,8 @@ class ServerSettings extends StatelessWidget {
 
     webview
       ..setApplicationNameForUserAgent('Mozilla/5.0')
-      ..launch('https://dev.cardinal-gate.net'); // Replace with your desired URL
+      ..launch(
+          'https://dev.cardinal-gate.net'); // Replace with your desired URL
   }
 
   @override
@@ -473,7 +488,6 @@ class LogViewer extends StatelessWidget {
   }
 }
 
-
 class Credits extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -481,8 +495,36 @@ class Credits extends StatelessWidget {
       appBar: AppBar(
         title: Text('Controllo dei file'),
       ),
-      // Add content for the General Settings page
-      // ...
+      body: Center(
+        child: ListView(
+          children: [
+            _buildCenteredText("Frontend UI - GTK4:\nGatsu, Joe.\n\n\n"),
+            _buildCenteredText(
+                "Frontend - Flutter:\nMercury, ramino, Joe.\n\n\n"),
+            _buildCenteredText(
+                "Loader - Cpp compat:\nramino, the other Mercury, depa_\n\n\n"),
+            _buildCenteredText("Loader - Rust:\nMercury, depa_\n\n\n"),
+            _buildCenteredText("LocalEA - porting:\nmid\n\n\n"),
+            _buildCenteredText(
+                "LocalEA - python server:\nMercury, Gatsu\n\n\n"),
+            _buildCenteredText(
+                "LocalEA - Score reuploader/netdump:\nMercury\n\n\n"),
+            _buildCenteredText("LivePatcher - SDVX:\nGatsu\n\n\n"),
+            _buildCenteredText(
+                "LivePatcher - IIDX:\nLiterally the whole team worked on this\n(fuck you konami)\n\n\n"),
+            _buildCenteredText("LivePatcher - Other games\ndepa_\n\n\n"),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCenteredText(String text) {
+    return Center(
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+      ),
     );
   }
 }
