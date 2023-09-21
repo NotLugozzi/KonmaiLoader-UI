@@ -4,25 +4,25 @@ import 'resident.dart';
 import 'exceed.dart';
 import 'vivid.dart';
 import 'museca.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        '/': (context) => MyHomePage(),
-        '/generalSettings': (context) => GeneralSettingsPage(),
-        '/serverSettings': (context) => ServerSettings(),
+        '/': (context) => const MyHomePage(),
+        '/generalSettings': (context) => const GeneralSettingsPage(),
+        '/serverSettings': (context) => const ServerSettings(),
         '/logViewer': (context) =>
-            LogViewer(filePath: 'E:\\KFC-2022122001\\contents\\log.txt'),
+            const LogViewer(filePath: 'E:\\KFC-2022122001\\contents\\log.txt'),
       },
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
@@ -35,26 +35,28 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('KonmaiLoaderUi - I:B:F:2023091900'),
+        title: const Text('KonmaiLoaderUi - I:B:F:2023091900'),
       ),
       body: Row(
         children: [
           // Side Panel
           Container(
             width: 314,
-            color: Color(0xFF464650),
+            color: const Color(0xFF464650),
             child: ListView(
-              padding: EdgeInsets.symmetric(vertical: 20),
+              padding: const EdgeInsets.symmetric(vertical: 20),
               children: [
                 _buildSidePanelItem(context, 'I Miei Giochi', () {
                   // Navigate to the main page (MyHomePage)
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (context) => MyHomePage(),
+                      builder: (context) => const MyHomePage(),
                     ),
                   );
                 }),
@@ -62,7 +64,7 @@ class MyHomePage extends StatelessWidget {
                   // Navigate to the general settings page
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => GeneralSettingsPage(),
+                      builder: (context) => const GeneralSettingsPage(),
                     ),
                   );
                 }),
@@ -70,7 +72,7 @@ class MyHomePage extends StatelessWidget {
                   // Navigate to the general settings page
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => ServerSettings(),
+                      builder: (context) => const ServerSettings(),
                     ),
                   );
                 }),
@@ -78,7 +80,7 @@ class MyHomePage extends StatelessWidget {
                   // Navigate to the general settings page
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => LogViewer(
+                      builder: (context) => const LogViewer(
                           filePath: 'E:\\KFC-2022122001\\contents\\log.txt'),
                     ),
                   );
@@ -87,7 +89,7 @@ class MyHomePage extends StatelessWidget {
                   // Navigate to the general settings page
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => Credits(),
+                      builder: (context) => const Credits(),
                     ),
                   );
                 }),
@@ -99,12 +101,12 @@ class MyHomePage extends StatelessWidget {
           // Main Content
           Expanded(
             child: Container(
-              color: Color(0xFF1B1A1F),
+              color: const Color(0xFF1B1A1F),
               child: GridView.count(
                 crossAxisCount: 3,
                 mainAxisSpacing: 11.0,
                 crossAxisSpacing: 23.0,
-                padding: EdgeInsets.all(20.0), // Adjust padding as needed
+                padding: const EdgeInsets.all(20.0), // Adjust padding as needed
                 children: [
                   buildGameOption(
                     imagePath: 'lib/assets/resident.png',
@@ -113,7 +115,7 @@ class MyHomePage extends StatelessWidget {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => ResidentPage(),
+                          builder: (context) => const ResidentPage(),
                         ),
                       );
                     },
@@ -125,7 +127,7 @@ class MyHomePage extends StatelessWidget {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => ExceedPage(),
+                          builder: (context) => const ExceedPage(),
                         ),
                       );
                     },
@@ -137,7 +139,7 @@ class MyHomePage extends StatelessWidget {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => VividPage(),
+                          builder: (context) => const VividPage(),
                         ),
                       );
                     },
@@ -149,7 +151,7 @@ class MyHomePage extends StatelessWidget {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => MusecaPage(),
+                          builder: (context) => const MusecaPage(),
                         ),
                       );
                     },
@@ -168,7 +170,7 @@ class MyHomePage extends StatelessWidget {
     return ListTile(
       title: Text(
         title,
-        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
       onTap: onTap,
     );
@@ -185,7 +187,7 @@ class MyHomePage extends StatelessWidget {
         width: 333,
         height: 175,
         decoration: BoxDecoration(
-          color: Color(0xFF4459A8),
+          color: const Color(0xFF4459A8),
           borderRadius: BorderRadius.circular(30),
         ),
         child: Column(
@@ -197,7 +199,7 @@ class MyHomePage extends StatelessWidget {
               height: 150,
               fit: BoxFit.contain,
             ),
-            SizedBox(height: 10.0),
+            const SizedBox(height: 10.0),
             Padding(
               padding: const EdgeInsets.all(5.0),
               child: Text(
@@ -214,6 +216,8 @@ class MyHomePage extends StatelessWidget {
 }
 
 class GeneralSettingsPage extends StatefulWidget {
+  const GeneralSettingsPage({super.key});
+
   @override
   _GeneralSettingsPageState createState() => _GeneralSettingsPageState();
 }
@@ -248,7 +252,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       // Display a checkbox for bool values
       return ListTile(
         title: Text(key),
-        trailing: Container(
+        trailing: SizedBox(
           width: 50.0, // Adjust the width as needed
           child: Checkbox(
             value: value,
@@ -264,7 +268,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       // Display a text input for other types
       return ListTile(
         title: Text(key),
-        trailing: Container(
+        trailing: SizedBox(
           width: 200.0, // Adjust the width as needed
           child: TextFormField(
             initialValue: value.toString(),
@@ -286,7 +290,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       await file.writeAsString(settingsJson);
       _cachedSettings = Map.from(_settings); // Update cached settings
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Settings saved successfully'),
         ),
       );
@@ -312,7 +316,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Cache cleared successfully'),
         ),
       );
@@ -330,10 +334,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Impostazioni Generali'),
+        title: const Text('Impostazioni Generali'),
       ),
       body: _settings.isEmpty
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
               itemCount: _settings.length,
               itemBuilder: (context, index) {
@@ -348,14 +352,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
           children: [
             ElevatedButton(
               onPressed: _saveSettings,
-              child: Text('Save'),
+              child: const Text('Save'),
             ),
-            SizedBox(width: 16.0),
+            const SizedBox(width: 16.0),
             ElevatedButton(
               onPressed: () {
                 _clearCachedSettings();
               },
-              child: Text('Clear Cache'),
+              child: const Text('Clear Cache'),
             ),
           ],
         ),
@@ -365,9 +369,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
 }
 
 class ServerSettings extends StatelessWidget {
+  const ServerSettings({super.key});
+
   void openWebView(BuildContext context) async {
     final webview = await WebviewWindow.create(
-      configuration: CreateConfiguration(
+      configuration: const CreateConfiguration(
         title: 'Server Options',
         windowWidth: 800,
         windowHeight: 600,
@@ -384,12 +390,12 @@ class ServerSettings extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Server Options'),
+        title: const Text('Server Options'),
       ),
       body: Center(
         child: ElevatedButton(
           onPressed: () => openWebView(context),
-          child: Text('Open Webview'),
+          child: const Text('Open Webview'),
         ),
       ),
     );
@@ -397,11 +403,13 @@ class ServerSettings extends StatelessWidget {
 }
 
 class LocalEA extends StatelessWidget {
+  const LocalEA({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Impostazioni Eamuse Locale'),
+        title: const Text('Impostazioni Eamuse Locale'),
       ),
       // Add content for the General Settings page
       // ...
@@ -410,11 +418,13 @@ class LocalEA extends StatelessWidget {
 }
 
 class DataVerifier extends StatelessWidget {
+  const DataVerifier({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Controllo dei file'),
+        title: const Text('Controllo dei file'),
       ),
       // Add content for the General Settings page
       // ...
@@ -423,11 +433,13 @@ class DataVerifier extends StatelessWidget {
 }
 
 class Patcher extends StatelessWidget {
+  const Patcher({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Patcher DLL'),
+        title: const Text('Patcher DLL'),
       ),
       // Add content for the General Settings page
       // ...
@@ -438,7 +450,7 @@ class Patcher extends StatelessWidget {
 class LogViewer extends StatelessWidget {
   final String filePath;
 
-  LogViewer({required this.filePath});
+  const LogViewer({super.key, required this.filePath});
 
   Future<String> readFile() async {
     try {
@@ -454,13 +466,13 @@ class LogViewer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Analisi log: KFC:A:G:A:2023091200'),
+        title: const Text('Analisi log: KFC:A:G:A:2023091200'),
       ),
       body: FutureBuilder<String>(
         future: readFile(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           } else if (snapshot.hasError) {
@@ -474,7 +486,7 @@ class LogViewer extends StatelessWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
                   fileContent,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: 'Consolas',
                     fontSize: 15,
                   ),
@@ -489,11 +501,13 @@ class LogViewer extends StatelessWidget {
 }
 
 class Credits extends StatelessWidget {
+  const Credits({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Controllo dei file'),
+        title: const Text('Controllo dei file'),
       ),
       body: Center(
         child: ListView(

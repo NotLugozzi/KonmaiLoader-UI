@@ -6,7 +6,7 @@ class Sidebar extends StatelessWidget {
   final bool showResidentGamingButton; // Control visibility of Resident Gaming button
   final bool showExceedGamingButton; // Control visibility of Exceed Gaming button
 
-  Sidebar({
+  const Sidebar({super.key, 
     required this.logFilePath,
     this.showResidentGamingButton = false,
     this.showExceedGamingButton = false,
@@ -16,9 +16,9 @@ class Sidebar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 314,
-      color: Color(0xFF464650),
+      color: const Color(0xFF464650),
       child: ListView(
-        padding: EdgeInsets.symmetric(vertical: 20),
+        padding: const EdgeInsets.symmetric(vertical: 20),
         children: [
           _buildSidePanelItem(context, 'Impostazioni generali', () {
             Navigator.of(context).pushNamed('/generalSettings');
@@ -46,14 +46,14 @@ class Sidebar extends StatelessWidget {
     return ListTile(
       title: Text(
         title,
-        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
       onTap: onTap,
     );
   }
 
   void _launchResidentGamingBat() async {
-    final assetPath = 'lib/assets/bin/residentgaming.bat';
+    const assetPath = 'lib/assets/bin/residentgaming.bat';
 
     try {
       final appDir = Directory.current;
@@ -71,7 +71,7 @@ class Sidebar extends StatelessWidget {
   }
 
   void _launchExceedGamingBat() async {
-    final assetPath = 'lib/assets/bin/exceed.bat';
+    const assetPath = 'lib/assets/bin/exceed.bat';
 
     try {
       final appDir = Directory.current;

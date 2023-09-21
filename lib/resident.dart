@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'sidebarwidget.dart'; // Import the sidebar widget
 
 class ResidentPage extends StatelessWidget {
+  const ResidentPage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final logFilePath = 'F:\\LDJ-003-2022103100\\contents\\log.txt'; // Set your desired log file path
+    const logFilePath = 'F:\\LDJ-003-2022103100\\contents\\log.txt'; // Set your desired log file path
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('KonmaiLoader - LDJ:2023090300'),
+        title: const Text('KonmaiLoader - LDJ:2023090300'),
       ),
       body: Stack(
         children: [
@@ -25,12 +27,12 @@ class ResidentPage extends StatelessWidget {
           Row(
             children: [
               // Include the Sidebar widget here with the logFilePath parameter and showResidentGamingButton
-              Sidebar(logFilePath: logFilePath, showResidentGamingButton: true),
+              const Sidebar(logFilePath: logFilePath, showResidentGamingButton: true),
               // Main Content
               Expanded(
                 child: Container(
                   color: Colors.transparent, // Make the container transparent
-                  child: Center(
+                  child: const Center(
                     child: Text('We are sorry. our team is still working on getting game-specific options and patches - Check back soon for new updates and features!'),
                   ),
                 ),

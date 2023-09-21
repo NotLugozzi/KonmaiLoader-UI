@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'sidebarwidget.dart'; // Import the sidebar widget
 
 class ExceedPage extends StatelessWidget {
+  const ExceedPage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final logFilePath = 'F:\\LDJ-003-2022103100\\contents\\log.txt'; // Set your desired log file path
+    const logFilePath = 'F:\\LDJ-003-2022103100\\contents\\log.txt'; // Set your desired log file path
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('KonmaiLoader - KFC:2023091200'),
+        title: const Text('KonmaiLoader - KFC:2023091200'),
       ),
       body: Stack(
         children: [
@@ -25,12 +27,12 @@ class ExceedPage extends StatelessWidget {
           Row(
             children: [
               // Include the Sidebar widget here with the logFilePath parameter and showExceedGamingButton
-              Sidebar(logFilePath: logFilePath, showExceedGamingButton: true),
+              const Sidebar(logFilePath: logFilePath, showExceedGamingButton: true),
               // Main Content
               Expanded(
                 child: Container(
                   color: Colors.transparent, // Make the container transparent
-                  child: Center(
+                  child: const Center(
                     child: Text('We are sorry. our team is still working on getting game-specific options and patches - Check back soon for new updates and features!'),
                   ),
                 ),

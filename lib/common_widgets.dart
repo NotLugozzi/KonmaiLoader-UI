@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // Common Styles
-final TextStyle commonTextStyle = TextStyle(
+const TextStyle commonTextStyle = TextStyle(
   fontSize: 20,
   fontFamily: 'GoogleSans', // Make sure to load the Google Sans font.
 );
@@ -13,10 +13,10 @@ Widget buildCommonButton() {
     width: 60,
     child: Container(
       decoration: BoxDecoration(
-        color: Color(0xFF412A34),
+        color: const Color(0xFF412A34),
         borderRadius: BorderRadius.circular(30),
       ),
-      child: Center(
+      child: const Center(
         child: Icon(Icons.add, color: Colors.white),
       ),
     ),
