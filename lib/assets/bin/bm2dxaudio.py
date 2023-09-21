@@ -10,7 +10,7 @@ while True:
     volume = cast(interface, POINTER(IAudioEndpointVolume))
 
     # Set the audio level to -38.0 dB (equivalent to 20% volume)
-    volume.SetMasterVolumeLevel(-65.0, None)
-    print("Set volume to -65 db")
+    volume.SetMasterVolumeLevel(-38.0, None)
+    print("Set volume to -38 db")
     # Wait for 2 seconds before setting the volume again
     time.sleep(2)

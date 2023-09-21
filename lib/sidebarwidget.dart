@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 
+
 class Sidebar extends StatelessWidget {
   final String logFilePath;
   final bool showResidentGamingButton; // Control visibility of Resident Gaming button
@@ -35,7 +36,7 @@ class Sidebar extends StatelessWidget {
             }),
           if (showExceedGamingButton)
             _buildSidePanelItem(context, 'Avvia loader-KFC.rs', () {
-              _launchExceedGamingBat();
+              _exceedGear();
             }),
         ],
       ),
@@ -70,7 +71,7 @@ class Sidebar extends StatelessWidget {
     }
   }
 
-  void _launchExceedGamingBat() async {
+  void _exceedGear() async {
     const assetPath = 'lib/assets/bin/exceed.bat';
 
     try {

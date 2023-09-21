@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'common_widgets.dart';
 import 'resident.dart';
@@ -225,7 +227,6 @@ class GeneralSettingsPage extends StatefulWidget {
 
 class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   Map<String, dynamic> _settings = {};
-  Map<String, dynamic> _cachedSettings = {};
 
   @override
   void initState() {
@@ -240,7 +241,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       final jsonMap = jsonDecode(jsonString);
       setState(() {
         _settings = jsonMap;
-        _cachedSettings = Map.from(jsonMap); // Initialize cached settings
+// Initialize cached settings
       });
     } catch (e) {
       // Handle errors loading or parsing the JSON file.
@@ -289,7 +290,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       final settingsJson = jsonEncode(_settings);
       final file = File('lib/assets/generalsettings.json');
       await file.writeAsString(settingsJson);
-      _cachedSettings = Map.from(_settings); // Update cached settings
+// Update cached settings
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Settings saved successfully'),
@@ -312,7 +314,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
           await rootBundle.loadString('lib/assets/generalsettings.json');
       final jsonMap = jsonDecode(jsonString);
       setState(() {
-        _cachedSettings = Map.from(jsonMap);
         _settings = Map.from(jsonMap);
       });
 

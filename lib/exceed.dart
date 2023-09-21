@@ -11,22 +11,15 @@ class ExceedPage extends StatelessWidget {
         'F:\\LDJ-003-2022103100\\contents\\log.txt'; // Set your desired log file path
     const kfcJsonPath = 'lib/assets/bin/KFC.json'; // JSON file path
 
-    // Function to read JSON and truncate values
-    Future<String> readAndTruncateJson() async {
+    // Function to read JSON
+    Future<Map<String, dynamic>> readJson() async {
       try {
         final String jsonString =
             await DefaultAssetBundle.of(context).loadString(kfcJsonPath);
         final Map<String, dynamic> jsonData = json.decode(jsonString);
-
-        final double totalplaytime = jsonData['total-runtime'];
-        final double lastsession = jsonData['last-session'];
-
-        final String truncatedValue1 = totalplaytime.toStringAsFixed(1);
-        final String truncatedValue2 = lastsession.toStringAsFixed(1);
-
-        return 'Tempo totale di gioco: $truncatedValue1\nUltima Sessione: $truncatedValue2';
+        return jsonData;
       } catch (e) {
-        return 'Error reading JSON data: $e';
+        return {'error': 'Error reading JSON data: $e'};
       }
     }
 
@@ -55,14 +48,18 @@ class ExceedPage extends StatelessWidget {
               Expanded(
                 child: Container(
                   color: Colors.transparent, // Make the container transparent
-                  child: FutureBuilder<String>(
-                    future: readAndTruncateJson(),
+                  child: FutureBuilder<Map<String, dynamic>>(
+                    future: readJson(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return CircularProgressIndicator();
                       } else if (snapshot.hasError) {
                         return Text('Error loading JSON data');
                       } else {
+                        final jsonData = snapshot.data;
+                        final totalplaytimeStr = jsonData?['total-runtime'];
+                        final lastsessionStr = jsonData?['last-session'];
+
                         return Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -76,7 +73,7 @@ class ExceedPage extends StatelessWidget {
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                snapshot.data ?? 'No data available',
+                                'Tempo totale di gioco: $totalplaytimeStr\nUltima Sessione: $lastsessionStr',
                                 textAlign: TextAlign.center,
                               ),
                             ],
