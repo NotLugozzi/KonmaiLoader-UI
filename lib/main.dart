@@ -170,7 +170,8 @@ class MyHomePage extends StatelessWidget {
     return ListTile(
       title: Text(
         title,
-        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        style:
+            const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
       onTap: onTap,
     );
@@ -525,7 +526,7 @@ class Credits extends StatelessWidget {
                 "LocalEA - Score reuploader/netdump:\nMercury\n\n\n"),
             _buildCenteredText("LivePatcher - SDVX:\nGatsu\n\n\n"),
             _buildCenteredText(
-                "LivePatcher - IIDX:\nLiterally the whole team worked on this\n(fuck you konami)\n\n\n"),
+                "LivePatcher - IIDX:\nLiterally the whole team worked on this\n(fuck you konmai)\n\n\n"),
             _buildCenteredText("LivePatcher - Other games\ndepa_\n\n\n"),
           ],
         ),

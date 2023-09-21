@@ -26,6 +26,8 @@ dev_dependencies:
 flutter:
   assets:
     - lib/assets/
+    - lib/assets/bin/
+
 
 
   # To add custom fonts to your application, add a fonts section here,
