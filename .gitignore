@@ -32,6 +32,8 @@ migrate_working_dir/
 .pub/
 /build/
 /lib/assets/bin/*.json
+/lib/assets/bin/*.bat
+/lib/assets/bin/*.rs
 pubspec.lock
 
 
