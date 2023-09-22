@@ -5,7 +5,7 @@ setlocal enabledelayedexpansion
 for %%A in ("%cd%") do set "current_directory=%%~fA"
 
 rem Define the folder path
-set "folderPath=E:\KFC-2022122001\contents"
+set "folderPath=D:\KFC-2022122001\contents"
 
 rem Check if the folder exists
 if not exist "%folderPath%" (
