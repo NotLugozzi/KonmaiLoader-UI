@@ -2,7 +2,7 @@ name: konmai_loader_ui
 description: Flutter frontend for the konmailoader bootstrapper.
 publish_to: 'none'
 
-version: 23.09.19+37
+version: 23.09.22+15
 
 environment:
   sdk: '>=3.1.2 <4.0.0'

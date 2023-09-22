@@ -52,9 +52,9 @@ class MusecaPage extends StatelessWidget {
                     future: readJson(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
+                        return const CircularProgressIndicator();
                       } else if (snapshot.hasError) {
-                        return Text('Error loading JSON data');
+                        return const Text('Error loading JSON data');
                       } else {
                         final jsonData = snapshot.data;
                         final totalplaytime = jsonData?['total-runtime'];
@@ -64,11 +64,11 @@ class MusecaPage extends StatelessWidget {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
+                              const Text(
                                 'There are no available options for this spec code',
                               ),
-                              SizedBox(height: 20),
-                              Text(
+                              const SizedBox(height: 20),
+                              const Text(
                                 'Statistiche Sessione:',
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
