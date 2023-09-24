@@ -58,10 +58,16 @@ def read_game_log():
         with open(log_file_path, "r", encoding="utf-8", errors="ignore") as log_file:
             state = None
             for line in log_file:
-                if "I:Attach: out APPMAINFLOW" in line:
-                    state = "starting"
+                if "I:Attach: in APPMAINFLOW" in line:
+                    state = "Starting"
                 elif "I:Attach: out NETWORK_CONFIRM" in line or "I:Attach: out ONLINEUPDATE" in line:
-                    state = "connecting to servers"
+                    state = "Connecting to servers"
+                elif "I:Attach: out TITLE_SCENE" in line:
+                    state = "In Attract Mode"
+                elif "I:Attach: out CARD_ENTRY_SCENE" in line:
+                    state = "Logging in"
+                elif "I:Attach: out CARD_OUT_SCENE" in line:
+                    state = "Logging out - Saving Play Data"
                 elif "I:Attach: out CARD_ENTRY_MODE_SELECT_SCENE" in line:
                     state = "Mode Select"
                 elif "I:Attach: out MYROOM_SCENE" in line:
@@ -72,6 +78,10 @@ def read_game_log():
                     state = "In chart - Playing"
                 elif "I:Attach: out RESULT_SCENE" in line:
                     state = "In Result Screen"
+                elif "I:Attach: out SKILL LEVEL SELECT" in line:
+                    state = "Skill Analyzer - Select Level"
+                elif "I:Attach: out ARENA_MATCHMAKE_SCENE" in line:
+                    state = "Arena Mode - Matchmaking"
                 elif "tempo:" in line:
                     try:
                         tempo = int(line.split(":")[1].strip())
@@ -194,7 +204,7 @@ def create_gui():
     root.mainloop()
 
 # Create and start the threadshre
-spice_thread = tading.Thread(target=check_spice_window)
+spice_thread = threading.Thread(target=check_spice_window)
 spice_thread.daemon = True
 spice_thread.start()
 
