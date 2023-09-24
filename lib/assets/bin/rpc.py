@@ -49,8 +49,56 @@ def extract_info_from_ea3_config(config_path):
     except Exception as e:
         print(f"Error parsing ea3-config.xml: {e}")
         return None, None, None, None, None
+    
+def read_game_log():
+    global tempo
+    
+    log_file_path = os.path.join(os.path.dirname(find_spice_exe_path()), "log.txt")
+    try:
+        with open(log_file_path, "r", encoding="utf-8", errors="ignore") as log_file:
+            state = None
+            for line in log_file:
+                if "I:Attach: out APPMAINFLOW" in line:
+                    state = "starting"
+                elif "I:Attach: out NETWORK_CONFIRM" in line or "I:Attach: out ONLINEUPDATE" in line:
+                    state = "connecting to servers"
+                elif "I:Attach: out CARD_ENTRY_MODE_SELECT_SCENE" in line:
+                    state = "Mode Select"
+                elif "I:Attach: out MYROOM_SCENE" in line:
+                    state = "My Room"
+                elif "I:Attach: out MUSICSELECT" in line:
+                    state = "chart select"
+                elif "I:Attach: out ALTERNATIVE_GAME_SCENE" in line:
+                    state = "In chart - Playing"
+                elif "I:Attach: out RESULT_SCENE" in line:
+                    state = "In Result Screen"
+                elif "tempo:" in line:
+                    try:
+                        tempo = int(line.split(":")[1].strip())
+                    except ValueError:
+                        tempo = int(time.time())
+
+            if state:
+                presence_data = {
+                    "state": state,
+                    "large_image": "big",
+                    "large_text": f"KFC:A:G:A:2023042500",
+                    "small_image": "small",
+                    "small_text": "Connected to instance",
+                    "start": tempo,
+                }
+                update_presence(presence_data)
+    except FileNotFoundError:
+        pass #this shouldn't happen as all loaders make at least one log file.
+    except Exception as e:
+        print(f"Error reading log file: {e}")
+
+
 
 def check_spice_window():
+    log_check_interval = 2  
+    initial_presence_set = False
+
     while True:
         print("Checking for 'spice64.exe' window...")
         spice_exe_path = find_spice_exe_path()
@@ -67,35 +115,29 @@ def check_spice_window():
                 model, dest, spec, rev, ext = extract_info_from_ea3_config(ea3_config_path)
 
                 print(model, dest, spec, rev, ext)
-                if model == "KFC":
-                    presence_data = {
-                        "state": "Premium Time (playing)",  # Update this based on your logic
-                        "large_image": "big",
-                        "large_text": f"{model}:{dest}:{spec}:{rev}:{ext}",
-                        "small_image": "small",
-                        "small_text": "Connected to instance",
-                        "start": tempo,
-                    }
+                if model == "KFC" and not initial_presence_set:
+                    presence_data = idle_presence_data
+                    update_presence(presence_data)
+                    initial_presence_set = True
                 elif model == "LDJ":
                     presence_data = {
-                        "state": "Premium Free (playing)",  # Update this based on your logic
+                        "state": "Premium Free (playing)",
                         "large_image": "big-iidx",
                         "large_text": f"{model}:{dest}:{spec}:{rev}:{ext}",
                         "small_image": "small-iidx",
                         "small_text": "Connected to instance",
                         "start": tempo,
                     }
-                else:
-                    presence_data = idle_presence_data  # Use the default presence data
+                    update_presence(presence_data)
 
-                update_presence(presence_data)
-            else:
-                print("ea3-config.xml not found.")
+            read_game_log()
         else:
             print("'spice64.exe' window not found.")
-            time.sleep(5)
+            initial_presence_set = False 
+        time.sleep(log_check_interval)
 
-# Function to handle button clicks
+
+
 def button_click(button_text):
     RPC.clear()
     if button_text in ["Attract Mode", "My Room"]:
@@ -129,12 +171,12 @@ def button_click(button_text):
     update_presence(presence_data)
 
 
-# Function to handle window closing event
+
 def on_closing():
     RPC.clear()
     root.destroy()
 
-# Function to create the GUI
+
 def create_gui():
     global root
     root = tk.Tk()
@@ -151,8 +193,8 @@ def create_gui():
 
     root.mainloop()
 
-# Create and start the threads
-spice_thread = threading.Thread(target=check_spice_window)
+# Create and start the threadshre
+spice_thread = tading.Thread(target=check_spice_window)
 spice_thread.daemon = True
 spice_thread.start()
 
@@ -161,4 +203,4 @@ gui_thread.daemon = True
 gui_thread.start()
 
 # Keep the main thread alive
-time.sleep(8000)  # Adjust this time as needed (8000 seconds default)
+time.sleep(8000)
