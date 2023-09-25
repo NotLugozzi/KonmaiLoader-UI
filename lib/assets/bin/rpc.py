@@ -29,8 +29,8 @@ def find_spice_exe_path():
     return None
 
 # is this bad? possibly. does it break with shift_jis? also yes. do i give a fuck? no. use utf8 dipshit
-# this should work with all games that use ea3-config.xml - just like 99% of shit on kml it's like half untested half thrown together in class or after drinking and it might possibly break like tomorrow 
-# (pls if a sows user is reading this i'll literally suck dick for an invite)
+# this should work with all games that use ea3-config.xml.(although we officially support onlly sdvx autorpc and IIDX manualRPC)
+# just like 99% of shit on kml it's like half untested half thrown together in class or after drinking and it might possibly break like tomorrow 
 
 
 def extract_info_from_ea3_config(config_path): 
