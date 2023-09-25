@@ -1,5 +1,5 @@
-from modules.connection import Connection
-from modules.request import Request
+from .connection import Connection
+from .request import Request
 
 
 def iidx_ticker_get(con: Connection):

@@ -1,12 +1,12 @@
 import os
 import socket
-from modules.request import Request
-from modules.response import Response
-from modules.rc4 import rc4
-from modules.exceptions import MalformedRequestException, APIError
+from .request import Request
+from .response import Response
+from .rc4 import rc4
+from .exceptions import MalformedRequestException, APIError
+
 
 class Connection:
-
     """ Container for managing a single connection to the API server.
     """
 
@@ -17,9 +17,9 @@ class Connection:
         :param port: the port of the host
         :param password: the connection password string
         """
-        self.host = "localhost"
-        self.port = 1999
-        self.password = ""
+        self.host = host
+        self.port = port
+        self.password = password
         self.socket = None
         self.cipher = None
         self.reconnect()
@@ -44,7 +44,7 @@ class Connection:
 
         # refresh session
         if refresh_session:
-            from modules.control import control_session_refresh
+            from .control import control_session_refresh
             control_session_refresh(self)
 
     def change_password(self, password):

@@ -73,11 +73,13 @@ def read_game_log():
                 elif "I:Attach: out MYROOM_SCENE" in line:
                     state = "My Room"
                 elif "I:Attach: out MUSICSELECT" in line:
-                    state = "chart select"
+                    state = "Chart Select"
                 elif "I:Attach: out ALTERNATIVE_GAME_SCENE" in line:
                     state = "In chart - Playing"
                 elif "I:Attach: out RESULT_SCENE" in line:
                     state = "In Result Screen"
+                elif "I:Attach: out T_RESULT_SCENE" in line:
+                    state = "Final Results - Leaving Game"
                 elif "I:Attach: out SKILL LEVEL SELECT" in line:
                     state = "Skill Analyzer - Select Level"
                 elif "I:Attach: out ARENA_MATCHMAKE_SCENE" in line:
