@@ -28,7 +28,7 @@ def process_folder(folder_path):
     return checksum_dict
 
 # Specify the folder path where your files are located
-folder_path = 'D:\\KFC-2022122001\\contents'
+folder_path = 'D:\\ArcadeData\\LDJ-003-2022103100\\contents'
 
 # Get the checksum dictionary for the entire folder (including subfolders)
 checksum_dict = process_folder(folder_path)
