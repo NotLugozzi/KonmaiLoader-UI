@@ -36,12 +36,12 @@ jobs:
         run: |
           COMMIT_ID="${{ steps.commit.outputs.commit_id }}"
           COMMIT_TEXT="${{ steps.commit.outputs.commit_text }}"
-
+          
           JSON_PAYLOAD='{
             "content": null,
             "embeds": [
               {
-                "description": "[**'"$COMMIT_ID"'"**](https://github.com/'"${{ github.repository }}"/commit/'"$COMMIT_ID"') '"$COMMIT_TEXT"'",
+                "description": "[**'"${COMMIT_ID}"'"**](https://github.com/'"${{ github.repository }}"/commit/'"${COMMIT_ID}"') '"${COMMIT_TEXT}"'",
                 "color": null,
                 "author": {
                   "name": "New Commit to KonmaiLoader!"
@@ -50,5 +50,6 @@ jobs:
             ],
             "attachments": []
           }'
-
+          
           curl -X POST -H "Content-Type: application/json" -d "$JSON_PAYLOAD" "$DISCORD_WEBHOOK_URL"
+
