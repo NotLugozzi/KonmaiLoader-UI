@@ -36,25 +36,21 @@ jobs:
         run: |
           COMMIT_ID="${{ steps.commit.outputs.commit_id }}"
           COMMIT_TEXT="${{ steps.commit.outputs.commit_text }}"
-      
-          # Create a temporary JSON file with the payload
-          echo '{
-            "content": null,
-            "embeds": [
+          
+          JSON_PAYLOAD=$(jq -n --arg COMMIT_ID "$COMMIT_ID" --arg COMMIT_TEXT "$COMMIT_TEXT" '{
+            content: null,
+            embeds: [
               {
-                "description": "[**'"${COMMIT_ID}"'"**](https://github.com/'"${{ github.repository }}"/commit/'"${COMMIT_ID}"') '"${COMMIT_TEXT}"'",
-                "color": null,
-                "author": {
-                  "name": "New Commit to KonmaiLoader!"
+                description: "[**\($COMMIT_ID)**](https://github.com/\(${{ github.repository }}/commit/\($COMMIT_ID))) \($COMMIT_TEXT)",
+                color: null,
+                author: {
+                  name: "New Commit to KonmaiLoader!"
                 }
               }
             ],
-            "attachments": []
-          }' > temp_payload.json
+            attachments: []
+          }')
+          
+          echo "$JSON_PAYLOAD" | curl -X POST -H "Content-Type: application/json" -d @- "$DISCORD_WEBHOOK_URL"
       
-          # Send the payload using curl
-          curl -X POST -H "Content-Type: application/json" -d @temp_payload.json "$DISCORD_WEBHOOK_URL"
-      
-          # Remove the temporary JSON file
-          rm temp_payload.json
 
