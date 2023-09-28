@@ -37,20 +37,21 @@ jobs:
           COMMIT_ID="${{ steps.commit.outputs.commit_id }}"
           COMMIT_TEXT="${{ steps.commit.outputs.commit_text }}"
           
-          JSON_PAYLOAD=$(jq -n --arg COMMIT_ID "$COMMIT_ID" --arg COMMIT_TEXT "$COMMIT_TEXT" '{
-            content: null,
-            embeds: [
+          JSON_PAYLOAD=$(printf '{
+            "content": null,
+            "embeds": [
               {
-                description: "[**\($COMMIT_ID)**](https://github.com/\(${{ github.repository }}/commit/\($COMMIT_ID))) \($COMMIT_TEXT)",
-                color: null,
-                author: {
-                  name: "New Commit to KonmaiLoader!"
+                "description": "[**%s**](https://github.com/%s/commit/%s) %s",
+                "color": null,
+                "author": {
+                  "name": "New Commit to KonmaiLoader!"
                 }
               }
             ],
-            attachments: []
-          }')
+            "attachments": []
+          }' "$COMMIT_ID" "${{ github.repository }}" "$COMMIT_ID" "$COMMIT_TEXT")
           
           echo "$JSON_PAYLOAD" | curl -X POST -H "Content-Type: application/json" -d @- "$DISCORD_WEBHOOK_URL"
+
       
 
