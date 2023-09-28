@@ -1,0 +1,12 @@
+{
+    "Enable Shocklink integration in SDVX":true,
+    "Enable Shocklink integration in IIDX":false,
+    "Max Shock Strenght":"30",
+    "Max Shock Time":"30",
+    "Openshock API key":"",
+    "Shocker ID":"",
+    "Score threshold for shock [SDVX]":"9200000",
+    "Shock on track crash [SDVX]": true,
+    "Ignore Assist Clear [IIDX]": true,
+    "Score threshold for shock [IIDX]": ""
+ }

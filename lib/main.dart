@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print, use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'common_widgets.dart';
 import 'resident.dart';
@@ -25,6 +23,7 @@ class MyApp extends StatelessWidget {
         '/serverSettings': (context) => const ServerSettings(),
         '/logViewer': (context) =>
             const LogViewer(filePath: 'E:\\KFC-2022122001\\contents\\log.txt'),
+        '/shocklinkSettings': (context) => const SLSettingsPage(),
       },
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
@@ -95,8 +94,14 @@ class MyHomePage extends StatelessWidget {
                     ),
                   );
                 }),
-                // Add more items here with their respective navigation actions
-                // ...
+                _buildSidePanelItem(context, 'Shocklink Settings', () {
+                  // Navigate to the Shocklink settings page
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const SLSettingsPage(),
+                    ),
+                  );
+                }),
               ],
             ),
           ),
@@ -108,7 +113,7 @@ class MyHomePage extends StatelessWidget {
                 crossAxisCount: 3,
                 mainAxisSpacing: 11.0,
                 crossAxisSpacing: 23.0,
-                padding: const EdgeInsets.all(20.0), // Adjust padding as needed
+                padding: const EdgeInsets.all(20.0),
                 children: [
                   buildGameOption(
                     imagePath: 'lib/assets/resident.png',
@@ -218,6 +223,151 @@ class MyHomePage extends StatelessWidget {
   }
 }
 
+class SLSettingsPage extends StatefulWidget {
+  const SLSettingsPage({super.key});
+
+  @override
+  _SLSettingsPageState createState() => _SLSettingsPageState();
+}
+
+class _SLSettingsPageState extends State<SLSettingsPage> {
+  Map<String, dynamic> _settings = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings();
+  }
+
+  Future<void> _loadSettings() async {
+    try {
+      final jsonString =
+          await rootBundle.loadString('lib/assets/openshock.json');
+      final jsonMap = jsonDecode(jsonString);
+      setState(() {
+        _settings = jsonMap;
+      });
+    } catch (e) {
+      print('Error loading settings: $e');
+    }
+  }
+
+  Widget _buildSettingTile(String key, dynamic value) {
+    if (value is bool) {
+      // Display a checkbox for bool values
+      return ListTile(
+        title: Text(key),
+        trailing: SizedBox(
+          width: 50.0, // Adjust the width as needed
+          child: Checkbox(
+            value: value,
+            onChanged: (newValue) {
+              setState(() {
+                _settings[key] = newValue;
+              });
+            },
+          ),
+        ),
+      );
+    } else {
+      return ListTile(
+        title: Text(key),
+        trailing: SizedBox(
+          width: 200.0,
+          child: TextFormField(
+            initialValue: value.toString(),
+            onChanged: (newValue) {
+              setState(() {
+                _settings[key] = newValue;
+              });
+            },
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _saveSettings() async {
+    try {
+      final settingsJson = jsonEncode(_settings);
+      final file = File('lib/assets/openshock.json');
+      await file.writeAsString(settingsJson);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Settings saved successfully'),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error saving settings: $e'),
+        ),
+      );
+    }
+  }
+
+  Future<void> _clearCachedSettings() async {
+    try {
+      final jsonString =
+          await rootBundle.loadString('lib/assets/openshock.json');
+      final jsonMap = jsonDecode(jsonString);
+      setState(() {
+        _settings = Map.from(jsonMap);
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Cache cleared successfully'),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error clearing cache: $e'),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Shocklink Settings'),
+      ),
+      body: _settings.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : ListView.builder(
+              itemCount: _settings.length,
+              itemBuilder: (context, index) {
+                final key = _settings.keys.elementAt(index);
+                final value = _settings[key];
+                return _buildSettingTile(key, value);
+              },
+            ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            ElevatedButton(
+              onPressed: _saveSettings,
+              child: const Text('Save'),
+            ),
+            const SizedBox(width: 16.0),
+            ElevatedButton(
+              onPressed: () {
+                _clearCachedSettings();
+              },
+              child: const Text('Clear Cache'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class GeneralSettingsPage extends StatefulWidget {
   const GeneralSettingsPage({super.key});
 
@@ -241,17 +391,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       final jsonMap = jsonDecode(jsonString);
       setState(() {
         _settings = jsonMap;
-// Initialize cached settings
       });
     } catch (e) {
-      // Handle errors loading or parsing the JSON file.
       print('Error loading settings: $e');
     }
   }
 
   Widget _buildSettingTile(String key, dynamic value) {
     if (value is bool) {
-      // Display a checkbox for bool values
       return ListTile(
         title: Text(key),
         trailing: SizedBox(
