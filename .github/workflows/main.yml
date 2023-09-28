@@ -36,8 +36,9 @@ jobs:
         run: |
           COMMIT_ID="${{ steps.commit.outputs.commit_id }}"
           COMMIT_TEXT="${{ steps.commit.outputs.commit_text }}"
-          
-          JSON_PAYLOAD=$(echo '{
+      
+          # Create a temporary JSON file with the payload
+          echo '{
             "content": null,
             "embeds": [
               {
@@ -49,7 +50,11 @@ jobs:
               }
             ],
             "attachments": []
-          }' | tr -d '\n')
-          
-          curl -X POST -H "Content-Type: application/json" -d "$JSON_PAYLOAD" "$DISCORD_WEBHOOK_URL"
+          }' > temp_payload.json
+      
+          # Send the payload using curl
+          curl -X POST -H "Content-Type: application/json" -d @temp_payload.json "$DISCORD_WEBHOOK_URL"
+      
+          # Remove the temporary JSON file
+          rm temp_payload.json
 
