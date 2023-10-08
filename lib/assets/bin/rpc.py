@@ -7,7 +7,7 @@ import asyncio
 import websockets
 import re
 
-RPC = pypresence.Presence(client_id="YOUR_CLIENT_ID")
+RPC = pypresence.Presence(client_id="1150016230200180746")
 RPC.connect()
 tempo = int(time.time())
 state = None
