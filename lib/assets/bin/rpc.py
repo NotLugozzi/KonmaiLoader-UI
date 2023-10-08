@@ -5,6 +5,9 @@ import psutil
 import threading
 import os
 import xml.etree.ElementTree as ET
+import asyncio
+import websockets
+import re
 
 RPC = pypresence.Presence(client_id="1150016230200180746")
 RPC.connect()
@@ -18,6 +21,78 @@ idle_presence_data = {
     "small_text": "In Games List",
     "start": tempo,
 }
+
+# WebSocket configuration
+websocket_address = "localhost"  # Change this address to the IP of your WebSocket server
+websocket_port = 10573
+
+async def connect_websocket():
+    uri = f"ws://{websocket_address}:{websocket_port}"
+    async with websockets.connect(uri) as websocket:
+        while True:
+            try:
+                message = await websocket.recv()
+                message = message.strip().upper()
+                print(message)
+                update_presence_from_message(message)
+            except websockets.exceptions.ConnectionClosed:
+                print("Connection closed. Reconnecting...")
+                await asyncio.sleep(1)
+                continue
+            except Exception as e:
+                print(f"An error occurred: {e}")
+                break
+
+def update_presence_from_message(message):
+    state = None
+    # Map message to Discord Rich Presence state
+    presence_data = {
+        "state": state,
+        "large_image": "big-iidx",
+        "large_text": f"LDJ:J:A:A:2023090500",
+        "small_image": "small-iidx",
+        "small_text": "Connected to instance",
+        "start": tempo,
+    }
+
+    if "SELECT FROM ORIGIN" in message:
+        origin_category = re.search(r'SELECT FROM ORIGIN (.+?) CATEGORY', message)
+        if origin_category:
+            origin_category = origin_category.group(1)
+            presence_data["state"] = f"In Style List ({origin_category})"
+    elif "FAILED.." in message:
+        chart_name = re.search(r'(.+?) FAILED', message)
+        if chart_name:
+            chart_name = chart_name.group(1)
+            presence_data["state"] = f"Result Screen - Failed ({chart_name})"
+    elif "CLEAR!" in message:
+        chart_name = re.search(r'(.+?) CLEAR!', message)
+        if chart_name:
+            chart_name = chart_name.group(1)
+            presence_data["state"] = f"Result Screen - Chart cleared ({chart_name})"
+    elif "WELCOME" in message:
+        presence_data["state"] = f"Starting Beatmania IIDX 30 Resident"
+    elif "ENTRY" in message:
+        presence_data["state"] = f"Logging In"
+    elif "MODE?" in message:
+        presence_data["state"] = f"Mode Select"
+    elif "STAY COOL" in message:
+        presence_data["state"] = f"Premium Start Selected" #not really sure this is premium start, migght be something else
+    elif "MUSIC SELECT!!" in message:
+        presence_data["state"] = f"In Songlist"
+    else:
+         presence_data["state"] = message
+
+    if state:
+        presence_data = {
+            "state": state,
+            "large_image": "big-iidx",
+            "large_text": f"LDJ:J:A:A:2023090500",
+            "small_image": "small",
+            "small_text": "Connected to instance",
+            "start": tempo,
+        }
+    update_presence(presence_data)
 
 def update_presence(presence_data):
     RPC.update(**presence_data)
@@ -128,14 +203,6 @@ def check_spice_window():
                     update_presence(presence_data)
                     initial_presence_set = True
                 elif model == "LDJ":
-                    presence_data = {
-                        "state": "Premium Free (playing)",
-                        "large_image": "big-iidx",
-                        "large_text": f"{model}:{dest}:{spec}:{rev}:{ext}",
-                        "small_image": "small-iidx",
-                        "small_text": "Connected to instance",
-                        "start": tempo,
-                    }
                     update_presence(presence_data)
 
             read_game_log()
