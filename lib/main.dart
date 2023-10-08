@@ -532,7 +532,7 @@ class ServerSettings extends StatelessWidget {
     webview
       ..setApplicationNameForUserAgent('Mozilla/5.0')
       ..launch(
-          'https://dev.cardinal-gate.net'); // Replace with your desired URL
+          ''); // Replace with your server URL
   }
 
   @override
