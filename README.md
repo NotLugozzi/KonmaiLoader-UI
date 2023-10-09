@@ -9,7 +9,7 @@ The main goals of this one were live patching, which basically means copying the
 - Built-in Nvcuda/nvcuvid binaries. Helps with playing newer KFC builds on amd/intel arc cards
 - Easier steam hooking for getting the game to run under proton without too many hiccups.
 - Last, but not least - a nice new UI made in Dart and Flutter, with material you support and with game autodetection/easier setup
-it also adds shocklink support if you're into that, allowing you to send events on track fail and on a score threshold [wip]
+it also adds openshock support if you're into that, allowing you to send events on track fail and on a score threshold [wip as in i need to get working on it lol]
 
 Sadly since the loader itself is still in early stages all we can provide now is the UI that (should) be fully backwards compatible with Spice and BT5, although there is still more code cleanup to do.
 
@@ -23,6 +23,7 @@ to build you'll need the following:
 - Flutter (any recent version will do)
 - NuGet (necessary for some webview stuff)
 - MsBuild 2019 (we strongly suggest 2022)
+- Python (anything >3.10 will do)
 
 Building in debug mode is fairly easy:
 clone the repository using git:
@@ -33,4 +34,4 @@ run flutter and select desktop target
 `flutter run`
 
 ## Contributing:
-You can easily contribute to the UI by opening an issue/submitting a PR. for now access is limited to the half broken ui but we will later expand to the loader's rust files and the ui variants, including GTK4, Qt5
+You can easily contribute to the UI by opening an issue/submitting a PR. for now access is limited to the half broken dart ui but we will later expand to the loader's rust files and the ui variants, including GTK4, Qt5
