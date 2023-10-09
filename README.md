@@ -29,13 +29,20 @@ to build you'll need the following:
 - MsBuild 2019 (we strongly suggest 2022)
 - Python (anything >3.10 will do)
 
-Building in debug mode is fairly easy:
+Building in debug mode is fairly easy:  
+
 clone the repository using git:
-`git clone https://github.com/NotLugozzi/KonmaiLoader-UI.git`
+`git clone https://github.com/NotLugozzi/KonmaiLoader-UI.git`   
+
+
 cd into the konmailoader-ui folder
-`cd KonmaiLoader-UI`
+`cd KonmaiLoader-UI`   
+
+
 run flutter and select desktop target
-`flutter run`
+`flutter run`   
+
+
 
 ## Contributing:
 You can easily contribute to the UI by opening an issue/submitting a PR. for now access is limited to the half broken dart ui but we will later expand to the loader's rust files and the ui variants, including GTK4, Qt5
