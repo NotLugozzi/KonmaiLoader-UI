@@ -7,8 +7,8 @@ import asyncio
 import websockets
 import re
 
-RPC = pypresence.Presence(client_id="1150016230200180746")
-RPC.connect()
+RPC_SDVX = pypresence.Presence(client_id="1150016230200180746")
+RPC_IIDX = pypresence.Presence(client_id="1162075373853483049")
 tempo = int(time.time())
 state = None
 
@@ -86,7 +86,7 @@ def update_presence_from_kfc_log(log_file_path):
                 if state:
                     presence_data = KFC_presence_data.copy()
                     presence_data["state"] = state
-                    RPC.update(**presence_data)
+                    RPC_SDVX.update(**presence_data)
     except Exception as e:
         print(f"Error reading or processing log file: {e}")
 
@@ -110,13 +110,15 @@ def find_spice_exe_path_and_read_ea3_config():
                     ext = root.find(".//ext").text
 
                     if model in ("LDJ", "TDJ"):
+                        RPC_IIDX.connect()
                         presence_data = ldj_presence.copy()
                         presence_data["large_text"] = f"{model}:{dest}:{spec}:{rev}:{ext}"
-                        RPC.update(**presence_data)
+                        RPC_IIDX.update(**presence_data)
                     elif model == "KFC":
+                        RPC_SDVX.connect()
                         presence_data = KFC_presence_data.copy()
                         presence_data["large_text"] = f"{model}:{dest}:{spec}:{rev}:{ext}"
-                        RPC.update(**presence_data)
+                        RPC_SDVX.update(**presence_data)
 
                     log_file_path = os.path.join(os.path.dirname(spice_exe_path), "log.txt")
                     return model, spice_exe_path, log_file_path  # Return model, spice path, and log file path
@@ -175,7 +177,7 @@ def update_presence_from_message(message):
     else:
         presence_data["state"] = message
     
-    RPC.update(**presence_data)
+    RPC_IIDX.update(**presence_data)
 
 if __name__ == "__main__":
     while True:
