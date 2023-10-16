@@ -9,9 +9,10 @@ import re
 
 RPC_SDVX = pypresence.Presence(client_id="1150016230200180746")
 RPC_IIDX = pypresence.Presence(client_id="1162075373853483049")
+
 tempo = int(time.time())
 state = None
-
+large_image = None
 # Default presence data for both KFC and LDJ
 default_presence_data = {
     "state": "Idle",
@@ -24,7 +25,7 @@ default_presence_data = {
 
 ldj_presence = {
     "state": state,
-    "large_image": "big-iidx",
+    "large_image": large_image,
     "large_text": f"LDJ:J:A:A:2023090500",
     "small_image": "small-iidx",
     "small_text": "Connected to instance",
@@ -87,6 +88,7 @@ def update_presence_from_kfc_log(log_file_path):
                     presence_data = KFC_presence_data.copy()
                     presence_data["state"] = state
                     RPC_SDVX.update(**presence_data)
+                    print(f"KFC Presence Data: {presence_data}")
     except Exception as e:
         print(f"Error reading or processing log file: {e}")
 
@@ -109,23 +111,32 @@ def find_spice_exe_path_and_read_ea3_config():
                     rev = root.find(".//rev").text
                     ext = root.find(".//ext").text
 
-                    if model in ("LDJ", "TDJ"):
+                    if model in ("LDJ", "TDJ") and spec == "B" and ext == "2022082400":
                         RPC_IIDX.connect()
                         presence_data = ldj_presence.copy()
                         presence_data["large_text"] = f"{model}:{dest}:{spec}:{rev}:{ext}"
+                        presence_data["large_image"] = "big-iidx-ch"
                         RPC_IIDX.update(**presence_data)
+                        print(f"LDJ CH Presence Data: {presence_data}")
+                    elif model in ("LDJ", "TDJ"):
+                        RPC_IIDX.connect()
+                        presence_data = ldj_presence.copy()
+                        presence_data["large_text"] = f"{model}:{dest}:{spec}:{rev}:{ext}"
+                        presence_data["large_image"] = "big-iidx"
+                        RPC_IIDX.update(**presence_data)
+                        print(f"LDJ Presence Data: {presence_data}")
                     elif model == "KFC":
                         RPC_SDVX.connect()
                         presence_data = KFC_presence_data.copy()
                         presence_data["large_text"] = f"{model}:{dest}:{spec}:{rev}:{ext}"
                         RPC_SDVX.update(**presence_data)
-
+                        print(f"KFC Presence Data: {presence_data}")
                     log_file_path = os.path.join(os.path.dirname(spice_exe_path), "log.txt")
                     return model, spice_exe_path, log_file_path  # Return model, spice path, and log file path
                 except Exception as e:
                     print(f"Error parsing ea3-config.xml: {e}")
 
-            return None, None, None 
+    return None, None, None
 
 # WebSocket parsing and updating presence for LDJ
 async def connect_websocket():
@@ -146,38 +157,70 @@ async def connect_websocket():
 
 def update_presence_from_message(message):
     presence_data = ldj_presence.copy()
-    
+    isCH = "0"
     if "SELECT FROM ORIGIN" in message:
         origin_category = re.search(r'SELECT FROM ORIGIN (.+?) CATEGORY', message)
         if origin_category:
             origin_category = origin_category.group(1)
             presence_data["state"] = f"In Style List ({origin_category})"
+        if isCH == "1":
+            presence_data["large_image"] = "big-iidx-ch"
     elif "FAILED.." in message:
         chart_name = re.search(r'(.+?) FAILED', message)
         if chart_name:
             chart_name = chart_name.group(1)
             presence_data["state"] = f"Result Screen - Failed ({chart_name})"
+        if isCH == "1":
+            presence_data["large_image"] = "big-iidx-ch"
     elif "CLEAR!" in message:
         chart_name = re.search(r'(.+?) CLEAR!', message)
         if chart_name:
             chart_name = chart_name.group(1)
             presence_data["state"] = f"Result Screen - Chart cleared ({chart_name})"
+        if isCH == "1":
+            presence_data["large_image"] = "big-iidx-ch"
     elif "WELCOME" in message:
-        presence_data["state"] = f"Starting Beatmania IIDX 30 Resident"
+        match = re.search(r'WELCOME TO BEATMANIA IIDX(.+)', message)
+        welcome_text = ""
+        if match:
+            welcome_text = match.group(1)
+            presence_data["state"] = f"Starting Beatmania IIDX {welcome_text}"
+            if "29" in welcome_text:
+                presence_data["large_image"] = "big-iidx-ch"
+                isCH = "1"
+        else:
+            presence_data["state"] = "Starting Beatmania IIDX"
     elif "ENTRY" in message:
         presence_data["state"] = f"Logging In"
+        if isCH == "1":
+            presence_data["large_image"] = "big-iidx-ch"
     elif "MODE?" in message:
         presence_data["state"] = f"Mode Select"
+        if isCH == "1":
+            presence_data["large_image"] = "big-iidx-ch"
     elif "STAY COOL" in message:
         presence_data["state"] = f"Premium Start Selected"
+        if isCH == "1":
+            presence_data["large_image"] = "big-iidx-ch"
     elif "MUSIC SELECT!!" in message:
         presence_data["state"] = f"In Songlist"
+        if isCH == "1":
+            presence_data["large_image"] = "big-iidx-ch"
     elif "THANK YOU FOR PLAYING!!" in message:
         presence_data["state"] = f"Quitting and Saving Data"
+        if isCH == "1":
+            presence_data["large_image"] = "big-iidx-ch"
+    elif "CONNECTED!" in message:
+        presence_data["state"] = f"Booting Game"
+        if isCH == "1":
+            presence_data["large_image"] = "big-iidx-ch"
     else:
         presence_data["state"] = message
+        if isCH == "1":
+            presence_data["large_image"] = "big-iidx-ch"
     
     RPC_IIDX.update(**presence_data)
+    print(f"LDJ Presence Data: {presence_data}")
 
 if __name__ == "__main__":
     while True:
