@@ -111,20 +111,25 @@ def find_spice_exe_path_and_read_ea3_config():
                     rev = root.find(".//rev").text
                     ext = root.find(".//ext").text
 
-                    if model in ("LDJ", "TDJ") and spec == "B" and ext == "2022082400":
-                        RPC_IIDX.connect()
-                        presence_data = ldj_presence.copy()
-                        presence_data["large_text"] = f"{model}:{dest}:{spec}:{rev}:{ext}"
-                        presence_data["large_image"] = "big-iidx-ch"
-                        RPC_IIDX.update(**presence_data)
-                        print(f"LDJ CH Presence Data: {presence_data}")
-                    elif model in ("LDJ", "TDJ"):
-                        RPC_IIDX.connect()
-                        presence_data = ldj_presence.copy()
-                        presence_data["large_text"] = f"{model}:{dest}:{spec}:{rev}:{ext}"
-                        presence_data["large_image"] = "big-iidx"
-                        RPC_IIDX.update(**presence_data)
-                        print(f"LDJ Presence Data: {presence_data}")
+                    if model in ("LDJ", "TDJ"):
+                        if spec == "B" and ext == "2022082400":
+                            RPC_IIDX.connect()
+                            casthour_presence_data =  {
+                                    "state": state,
+                                    "large_image": "big-iidx-ch",
+                                    "large_text": f"{model}:{dest}:{spec}:{rev}:{ext}",
+                                    "small_image": "small-iidx",
+                                    "small_text": "Connected to instance",
+                                    "start": tempo,
+                                    }
+                            CasthourPresence = "1"
+                        else:
+                            RPC_IIDX.connect()
+                            presence_data = ldj_presence.copy()
+                            presence_data["large_text"] = f"{model}:{dest}:{spec}:{rev}:{ext}"
+                            presence_data["large_image"] = "big-iidx"
+                            RPC_IIDX.update(**presence_data)
+                            print(f"LDJ Presence Data: {presence_data}")
                     elif model == "KFC":
                         RPC_SDVX.connect()
                         presence_data = KFC_presence_data.copy()
@@ -132,7 +137,7 @@ def find_spice_exe_path_and_read_ea3_config():
                         RPC_SDVX.update(**presence_data)
                         print(f"KFC Presence Data: {presence_data}")
                     log_file_path = os.path.join(os.path.dirname(spice_exe_path), "log.txt")
-                    return model, spice_exe_path, log_file_path  # Return model, spice path, and log file path
+                    return model, spice_exe_path, log_file_path, CasthourPresence  # Return model, spice path, and log file path
                 except Exception as e:
                     print(f"Error parsing ea3-config.xml: {e}")
 
@@ -155,9 +160,12 @@ async def connect_websocket():
             except Exception as e:
                 print(f"An error occurred: {e}")
 
-def update_presence_from_message(message):
-    presence_data = ldj_presence.copy()
-    isCH = "0"
+def update_presence_from_message(message, CasthourPresence):
+
+    if CasthourPresence == "1":
+        presence_data = casthour_presence_data.copy()
+    else:
+        presence_data = ldj_presence.copy()
     if "SELECT FROM ORIGIN" in message:
         origin_category = re.search(r'SELECT FROM ORIGIN (.+?) CATEGORY', message)
         if origin_category:
