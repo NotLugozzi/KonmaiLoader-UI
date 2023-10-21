@@ -119,6 +119,11 @@ def find_spice_exe_path_and_read_ea3_config():
                             presence_data["large_image"] = "big-iidx-ch"
                             RPC_IIDX.update(**presence_data)
                             print(f"LDJ CH Presence Data: {presence_data}")
+                        elif ext == "2023101800":
+                            RPC_IIDX.connect()
+                            presence_data = ldj_presence.copy()
+                            presence_data["large_image"] = "big-iidx-epo"
+                            RPC_IIDX.update(**presence_data)
                         else:
                             RPC_IIDX.connect()
                             presence_data = ldj_presence.copy()
@@ -159,6 +164,7 @@ async def connect_websocket():
 def update_presence_from_message(message):
     presence_data = ldj_presence.copy()
     isCH = "0"
+    isEpo = "0"
     if "SELECT FROM ORIGIN" in message:
         origin_category = re.search(r'SELECT FROM ORIGIN (.+?) CATEGORY', message)
         if origin_category:
@@ -189,6 +195,9 @@ def update_presence_from_message(message):
             if "29" in welcome_text:
                 presence_data["large_image"] = "big-iidx-ch"
                 isCH = "1"
+            if "31" in welcome_text:
+                presence_data["large_image"] = "big-iidx-epo"
+                isEpo = "1"
         else:
             presence_data["state"] = "Starting Beatmania IIDX"
     elif "ENTRY" in message:
