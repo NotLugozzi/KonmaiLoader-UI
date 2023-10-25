@@ -65,7 +65,7 @@ KFC_presence_data = {
 }
 
 # WebSocket configuration
-websocket_address = "localhost"  # Change this address to your WebSocket server's address (TICKERHOOK IS *MANDATORY* FOR IIDX WEBSOCKET CONFIG)
+websocket_address = "localhost"  # Change this address to your WebSocket server's address if you're running rpc on a separate machine(REMEMBER THAT TICKERHOOK IS *MANDATORY* FOR IIDX WEBSOCKET CONFIG)
 websocket_port = 10573
 
 # Function to update presence data based on KFC logs
@@ -172,19 +172,31 @@ def find_spice_exe_path_and_read_ea3_config():
 
 async def connect_websocket():
     uri = f"ws://{websocket_address}:{websocket_port}"
-    async with websockets.connect(uri) as websocket:
-        while True:
-            try:
-                message = await websocket.recv()
-                message = message.strip().upper()
-                print(message)
-                update_presence_from_message(message, iidx_version)  # Pass iidx_version
-            except websockets.exceptions.ConnectionClosed:
-                print("Connection closed. Reconnecting...")
-                await asyncio.sleep(1)
-                continue
-            except Exception as e:
-                print(f"An error occurred: {e}")
+    reconnecting = False  # Initialize the reconnecting flag
+    try:
+        async with websockets.connect(uri) as websocket:
+            while True:
+                try:
+                    message = await websocket.recv()
+                    message = message.strip().upper()
+                    print(message)
+                    update_presence_from_message(message, iidx_version)
+                    reconnecting = False  # Reset the reconnecting flag when a message is received
+                except websockets.exceptions.ConnectionClosed:
+                    if not reconnecting:
+                        print("Connection closed. Reconnecting...")
+                        reconnecting = True  # Set the reconnecting flag when connection is closed
+                        timeout_task = asyncio.create_task(asyncio.sleep(10))  # Start a 10 second timer
+                    try:
+                        await asyncio.wait_for(timeout_task, 10)  # Wait for up to 10 seconds
+                    except asyncio.TimeoutError:
+                        print("Timeout: No message received for 30 seconds. Leaving RPC and quitting loop...")
+                        print("IIDX Rpc disconnected. goodbye :D")
+                        raise SystemExit
+                except Exception as e:
+                    print(f"An error occurred: {e}")
+    except Exception as e:
+        print(f"An error occurred while connecting: {e}")
 
 
 
