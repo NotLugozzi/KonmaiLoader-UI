@@ -4,14 +4,18 @@ import xml.etree.ElementTree as ET
 import websockets
 import re
 import asyncio
+
+
 import pyautogui
 import pytesseract
 import cv2
 import numpy as np
 from PIL import Image
+import pygetwindow
+
 import requests
 import random
-import json
+
 
 
 
@@ -66,6 +70,7 @@ async def connect_websocket():
                     message = message.strip().upper()
                     print(message)
                     if "CLEAR!" in message:
+                        await asyncio.sleep(3) #you might need less if running on a different refresh rate
                         cleared_shock()
                     if "FAILED.." in message:
                         shock_function()
@@ -92,27 +97,26 @@ def shock_function():
     shocker_id = ""
     target_url = "https://api.shocklink.net/1/shockers/control" 
     api_key = "" #generate an api key from the shocklink dashboard
-    rand_shock = random.uniform(min_shock, max_shock)
-    rand_time = random.uniform(min_time, max_time)
+    rand_shock = random.randint(min_shock, max_shock)
+    rand_time = random.randint(min_time, max_time)
     rand_time_millis = int(rand_time * 1000)
 
-    request_data = [
-        {
+    request_data ={
             "id": shocker_id,
             "type": 0,
             "intensity": rand_shock,
             "duration": rand_time_millis
         }
-    ]
 
     headers = {
-        'accept': 'application/json',
         'Content-Type': 'application/json',
         "OpenShockToken": api_key
     }
 
     try:
-        response = requests.post(target_url, data=json.dumps(request_data), headers=headers)
+        response = requests.post(target_url, headers=headers, data=request_data)
+        print(request_data)
+        print(headers)
         if response.status_code == 200:
             print("Shock request sent successfully.")
         else:
@@ -124,17 +128,17 @@ def shock_function():
 def cleared_shock():
     score_threshold = 250
     window_title_regex = r"Beatmania IIDX \w+ main"
-    screenshot_filename = "screenshot.png"
 
-    pyautogui.screenshot(screenshot_filename)
-    windows = pyautogui.getWindows()
     target_window = None
-    for window in windows:
-        if re.match(window_title_regex, window.title):
+    for window in pygetwindow.getWindowsWithTitle(window_title_regex):
+        if window.isMaximized or window.isFullScreen:
             target_window = window
             break
 
     if target_window:
+        screenshot_filename = "screenshot.png"
+        pyautogui.screenshot(screenshot_filename, region=(target_window.left, target_window.top, target_window.width, target_window.height))
+
         left = target_window.left + 404
         top = target_window.top + 550
         right = target_window.left + 494
