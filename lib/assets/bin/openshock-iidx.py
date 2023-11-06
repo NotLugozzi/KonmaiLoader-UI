@@ -10,14 +10,10 @@ import cv2
 import numpy as np
 from PIL import Image
 import requests
+import random
+import json
 
-min_shock = 1
-max_shock = 100 
-min_time = 1
-max_time = 10
-shocker_id = "your_shocker_id"
-target_url = "https://api.shocklink.net/1/shockers/control" 
-score_threshold = 250
+
 
 def main():
     while True:
@@ -88,21 +84,35 @@ async def connect_websocket():
     except Exception as e:
         print(f"An error occurred: {e}")
 
-def shock_function(min_shock, max_shock, min_time, max_time, target_url, shocker_id):
+def shock_function():
+    min_shock = 1
+    max_shock = 100 
+    min_time = 1
+    max_time = 10
+    shocker_id = ""
+    target_url = "https://api.shocklink.net/1/shockers/control" 
+    api_key = "" #generate an api key from the shocklink dashboard
     rand_shock = random.uniform(min_shock, max_shock)
     rand_time = random.uniform(min_time, max_time)
     rand_time_millis = int(rand_time * 1000)
 
-    # Prepare the request data
-    request_data = {
-        "id": shocker_id,
-        "type": 1,
-        "intensity": rand_shock,
-        "duration": rand_time_millis
+    request_data = [
+        {
+            "id": shocker_id,
+            "type": 0,
+            "intensity": rand_shock,
+            "duration": rand_time_millis
+        }
+    ]
+
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+        "OpenShockToken": api_key
     }
 
     try:
-        response = requests.post(target_url, json=request_data)
+        response = requests.post(target_url, data=json.dumps(request_data), headers=headers)
         if response.status_code == 200:
             print("Shock request sent successfully.")
         else:
@@ -110,7 +120,9 @@ def shock_function(min_shock, max_shock, min_time, max_time, target_url, shocker
     except Exception as e:
         print(f"An error occurred while sending the shock request: {e}")
 
-def cleared_shock(score_threshold):
+
+def cleared_shock():
+    score_threshold = 250
     window_title_regex = r"Beatmania IIDX \w+ main"
     screenshot_filename = "screenshot.png"
 
@@ -142,7 +154,7 @@ def cleared_shock(score_threshold):
                 print(f"Extracted Number: {number}")
 
                 if number <= score_threshold:
-                    shock_function(min_shock, max_shock, min_time, max_time, target_url, shocker_id)
+                    shock_function()
     else:
         print("Window not found")
 
