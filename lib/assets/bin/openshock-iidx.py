@@ -142,7 +142,7 @@ def cleared_shock(score_threshold):
                 print(f"Extracted Number: {number}")
 
                 if number <= score_threshold:
-                    shock_function()
+                    shock_function(min_shock, max_shock, min_time, max_time, target_url, shocker_id)
     else:
         print("Window not found")
 
