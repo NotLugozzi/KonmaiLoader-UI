@@ -56,7 +56,7 @@ def find_spice_exe_path_and_read_ea3_config():
     # If no matching process or config file was found, return None
     return None
 
-websocket_address = "localhost"  # Change this address to your WebSocket server's address if you're running rpc on a separate machine(REMEMBER THAT TICKERHOOK IS *MANDATORY* FOR IIDX WEBSOCKET CONFIG)
+websocket_address = "localhost"  # Change this address to your WebSocket server's address if you're running the SL integration on a separate machine(REMEMBER THAT TICKERHOOK IS *MANDATORY* FOR IIDX WEBSOCKET CONFIG)
 websocket_port = 10573
 
 async def connect_websocket():
@@ -83,8 +83,8 @@ async def connect_websocket():
                     try:
                         await asyncio.wait_for(timeout_task, 10)  # Wait for up to 10 seconds
                     except asyncio.TimeoutError:
-                        print("Timeout: No message received for 10 seconds. Leaving RPC and quitting loop...")
-                        print("IIDX Rpc disconnected. Goodbye :D")
+                        print("Timeout: No message received for 10 seconds. Disconnecting the API and quitting tickerhookWS")
+                        print("sl2dx disconnected. Goodbye :D")
                         raise SystemExit
     except Exception as e:
         print(f"An error occurred: {e}")
@@ -101,20 +101,22 @@ def shock_function():
     rand_time = random.randint(min_time, max_time)
     rand_time_millis = int(rand_time * 1000)
 
-    request_data ={
+    request_data =[
+        {
             "id": shocker_id,
-            "type": 0,
+            "type": 1,
             "intensity": rand_shock,
             "duration": rand_time_millis
         }
+    ]
 
-    headers = {
+    headers ={
         'Content-Type': 'application/json',
-        "OpenShockToken": api_key
+        'OpenShockToken': api_key
     }
 
     try:
-        response = requests.post(target_url, headers=headers, data=request_data)
+        response = requests.post(target_url, headers=headers, json=request_data)
         print(request_data)
         print(headers)
         if response.status_code == 200:
