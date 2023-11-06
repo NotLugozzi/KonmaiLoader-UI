@@ -45,7 +45,7 @@ def find_spice_exe_path_and_read_ea3_config():
 
                     model = root.find(".//model")
 
-                    if all(element is not None for element in [model, dest, spec, rev, ext]):
+                    if all(element is not None for element in [model]):
                         model = model.text
                         return model, spice_exe_path
                     else:
