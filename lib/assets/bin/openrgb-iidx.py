@@ -70,8 +70,6 @@ async def connect_websocket():
                     print(message)
                     if "CONNECTED!" in message:
                         keyboard.set_color(RGBColor(0, 255, 0))
-                        await asyncio.sleep(3)
-                        keyboard.clear
                     elif "WELCOME" in message:
                         match = re.search(r'WELCOME TO BEATMANIA IIDX(.+)', message)
                         welcome_text = ""
